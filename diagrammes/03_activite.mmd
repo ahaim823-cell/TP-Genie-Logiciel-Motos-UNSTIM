@@ -1,0 +1,42 @@
+%% Figure — Diagramme d'activité du démarrage biométrique
+%% Deux niveaux de décision : (1) empreinte reconnue ? (2) droit d'accès valide ?
+%% Un nœud de fusion (losange) réunit les deux branches de refus avant le traitement commun.
+%% Nœud final UML (cible) : cercle blanc à bord épais contenant un disque plein « ● ».
+%% Seuil d'alarme : 3 échecs consécutifs (SEUIL_ECHECS = 3)
+flowchart TD
+    DEBUT((" ")):::initial
+    A1("Poser le doigt sur le lecteur")
+    A2("Capturer l'empreinte et extraire le gabarit")
+    A3("Comparer le gabarit aux gabarits enregistrés")
+    D1{"Niveau 1<br/>Empreinte reconnue ?"}:::decision
+    A4("Vérifier le droit d'accès à cette moto")
+    D2{"Niveau 2<br/>Droit d'accès valide ?"}:::decision
+    S1("Fermer le relais de démarrage")
+    S2("Allumer le voyant vert : le moteur peut démarrer")
+    S3("Remettre le compteur d'échecs à 0")
+    S4("Enregistrer l'événement DEMARRAGE_AUTORISE")
+    F1{" "}:::fusion
+    E1("Refuser le démarrage : relais ouvert, voyant rouge")
+    E2("Incrémenter le compteur d'échecs")
+    E3("Enregistrer l'événement TENTATIVE_REFUSEE")
+    D3{"compteurEchecs ≥ 3 ?"}:::decision
+    AL1("Déclencher l'alarme sonore"):::alarme
+    AL2("Enregistrer l'événement ALARME et alerter l'agent de sécurité"):::alarme
+    AL3("Remettre le compteur d'échecs à 0"):::alarme
+    FIN1(("●")):::final
+    FIN2(("●")):::final
+
+    DEBUT --> A1 --> A2 --> A3 --> D1
+    D1 -- "[oui]" --> A4 --> D2
+    D1 -- "[non]" --> F1
+    D2 -- "[oui]" --> S1 --> S2 --> S3 --> S4 --> FIN1
+    D2 -- "[non]" --> F1
+    F1 --> E1 --> E2 --> E3 --> D3
+    D3 -- "[oui]" --> AL1 --> AL2 --> AL3 --> FIN2
+    D3 -- "[non]" --> FIN2
+
+    classDef initial fill:#1F3A5F,stroke:#1F3A5F,color:#1F3A5F
+    classDef final fill:#FFFFFF,stroke:#1F3A5F,stroke-width:3px,color:#1F3A5F,font-size:26px
+    classDef decision fill:#FFF6DB,stroke:#B7860B,color:#5C4300
+    classDef fusion fill:#FFF6DB,stroke:#B7860B,color:#FFF6DB
+    classDef alarme fill:#FDECEA,stroke:#C0392B,color:#8E1B10

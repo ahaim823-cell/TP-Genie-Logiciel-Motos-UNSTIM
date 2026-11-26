@@ -1,0 +1,76 @@
+%% Figure — Diagramme de composants en 4 couches, empilées de haut en bas :
+%% gestion → traitement → matériel → données
+%% Dépendances : «utilise» (pointillés), «pilote» (trait plein), «synchronise» (pointillés entre les données)
+%% La couche de traitement s'exécute sur l'unité centrale de la moto, sans dépendance au réseau.
+flowchart TB
+    subgraph GEST["COUCHE DE GESTION (serveur de l'UNSTIM)"]
+        WEB["«composant»<br/>Application web d'administration"]:::gestion
+        RAP["«composant»<br/>Module de rapports et alertes"]:::gestion
+    end
+
+    subgraph TRAIT["COUCHE DE TRAITEMENT (exécutée sur l'unité centrale de la moto)"]
+        CTRL["«composant»<br/>Module de contrôle d'accès et de démarrage"]:::traitement
+        ACQ["«composant»<br/>Module d'acquisition d'empreinte"]:::traitement
+        CMP["«composant»<br/>Module de comparaison"]:::traitement
+        ALM["«composant»<br/>Module de gestion de l'alarme"]:::traitement
+        JRN["«composant»<br/>Module de journalisation"]:::traitement
+    end
+
+    subgraph MAT["COUCHE MATÉRIEL (sur la moto)"]
+        LEC["Lecteur d'empreinte digitale"]:::materiel
+        LED["Voyants LED"]:::materiel
+        REL["Relais de démarrage"]:::materiel
+        ALS["Alarme sonore"]:::materiel
+        BAT["Batterie de la moto"]:::materiel
+        UCE["Unité centrale (microcontrôleur)"]:::materiel
+        ALL["Circuit d'allumage"]:::materiel
+    end
+
+    subgraph DON["COUCHE DE DONNÉES"]
+        BDD[("Base de données centrale")]:::donnees
+        MEM[("Mémoire sécurisée embarquée")]:::donnees
+    end
+
+    %% Liens invisibles : imposent l'empilement des couches et l'ordre des colonnes
+    RAP ~~~ CTRL
+    ACQ ~~~ LEC
+    CMP ~~~ LED
+    CMP ~~~ REL
+    ALM ~~~ ALS
+    JRN ~~~ BAT
+    LEC ~~~ MEM
+    ALS ~~~ BDD
+    BAT ~~~ UCE
+    REL ~~~ ALL
+
+    %% Couche de gestion
+    WEB -. "«utilise»" .-> RAP
+    WEB -. "«utilise»" .-> BDD
+    RAP -. "«utilise»" .-> BDD
+
+    %% Couche de traitement
+    CTRL -. "«utilise»" .-> ACQ
+    CTRL -. "«utilise»" .-> CMP
+    CTRL -. "«utilise»" .-> ALM
+    CTRL -. "«utilise»" .-> JRN
+
+    %% Traitement → matériel
+    ACQ -- "«pilote»" --> LEC
+    CTRL -- "«pilote»" --> LED
+    CTRL -- "«pilote»" --> REL
+    ALM -- "«pilote»" --> ALS
+
+    %% Liaisons physiques
+    REL -- "ferme / ouvre" --> ALL
+    BAT -- "alimente" --> UCE
+
+    %% Traitement → données
+    CMP -. "«utilise»" .-> MEM
+    JRN -. "«utilise»" .-> MEM
+    JRN -. "«synchronise» événements" .-> BDD
+    BDD -. "«synchronise» gabarits, autorisations" .-> MEM
+
+    classDef gestion fill:#E8F0FA,stroke:#2E6DB4,color:#1F3A5F
+    classDef traitement fill:#EAF6EE,stroke:#2E8B57,color:#1B5E3A
+    classDef materiel fill:#FFF6DB,stroke:#B7860B,color:#5C4300
+    classDef donnees fill:#F3E8FA,stroke:#7B3FA0,color:#4A2163

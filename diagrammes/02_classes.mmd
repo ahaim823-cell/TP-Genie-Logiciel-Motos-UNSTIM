@@ -1,0 +1,127 @@
+%% Figure — Diagramme de classes du dispositif de démarrage biométrique
+%% Noms officiels : voir GLOSSAIRE.md
+%% Les énumérations sont référencées par le type des attributs (role : Role, type : TypeEvenement…) : aucun trait nécessaire.
+classDiagram
+    direction TB
+
+    class Utilisateur {
+        -idUtilisateur : int
+        -nom : String
+        -prenoms : String
+        -role : Role
+        -contact : String
+        -actif : boolean
+        +creerCompte() void
+        +modifierProfil() void
+        +desactiver() void
+    }
+
+    class Moto {
+        -idMoto : int
+        -immatriculation : String
+        -marque : String
+        -modele : String
+        +associerProprietaire(u : Utilisateur) void
+        +estAutorise(u : Utilisateur) boolean
+    }
+
+    class EmpreinteBiometrique {
+        -idEmpreinte : int
+        -gabaritChiffre : byte[]
+        -doigt : String
+        -dateEnrolement : Date
+        +enroler(gabarit : byte[]) void
+        +supprimer() void
+    }
+
+    class Autorisation {
+        -idAutorisation : int
+        -dateDebut : Date
+        -dateFin : Date
+        -active : boolean
+        +estValide(date : Date) boolean
+        +revoquer() void
+    }
+
+    class Evenement {
+        -idEvenement : int
+        -dateHeure : DateTime
+        -type : TypeEvenement
+        -resultat : boolean
+        -motif : MotifRefus
+        +enregistrer() void
+        +consulter() List~Evenement~
+    }
+
+    class UniteCentrale {
+        -idUnite : String
+        -etat : String
+        -compteurEchecs : int
+        -SEUIL_ECHECS : int = 3
+        +comparer(gabarit : byte[]) Utilisateur
+        +verifierDroit(u : Utilisateur, m : Moto) boolean
+        +commanderDemarrage() void
+        +incrementerEchecs() void
+        +reinitialiserEchecs() void
+        +declencherAlarme() void
+    }
+
+    class LecteurBiometrique {
+        -etat : String
+        -resolution : int
+        +capturer() Image
+        +extraireGabarit() byte[]
+    }
+
+    class RelaisDemarrage {
+        -etat : EtatRelais
+        +autoriser() void
+        +verrouiller() void
+    }
+
+    class Alarme {
+        -etat : boolean
+        -volume : int
+        -dureeSecondes : int
+        +activer() void
+        +desactiver() void
+    }
+
+    class Role {
+        <<enumeration>>
+        PROPRIETAIRE
+        AGENT_SECURITE
+        ADMINISTRATEUR
+    }
+
+    class TypeEvenement {
+        <<enumeration>>
+        DEMARRAGE_AUTORISE
+        TENTATIVE_REFUSEE
+        ALARME
+    }
+
+    class MotifRefus {
+        <<enumeration>>
+        EMPREINTE_NON_RECONNUE
+        DROIT_REFUSE
+    }
+
+    class EtatRelais {
+        <<enumeration>>
+        OUVERT
+        FERME
+    }
+
+    Utilisateur "1" --> "0..*" Moto : possède
+    Utilisateur "1" *-- "0..*" EmpreinteBiometrique : a
+    Utilisateur "1" --> "0..*" Autorisation : détient
+    Autorisation "0..*" --> "1" Moto : porte sur
+    Moto "1" -- "1" UniteCentrale : est équipée de
+    UniteCentrale "1" --> "1" LecteurBiometrique : utilise
+    UniteCentrale "1" --> "1" RelaisDemarrage : pilote
+    UniteCentrale "1" --> "1" Alarme : déclenche
+    UniteCentrale "1" --> "0..*" Evenement : génère
+    Evenement "0..*" --> "1" Moto : concerne
+    Evenement "0..*" --> "0..1" Utilisateur : implique
+    UniteCentrale ..> EmpreinteBiometrique : «compare»

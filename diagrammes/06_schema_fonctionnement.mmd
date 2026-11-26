@@ -1,0 +1,30 @@
+%% Figure — Schéma de fonctionnement du dispositif (vue d'ensemble, non UML)
+flowchart TB
+    P["Propriétaire devant la moto"]:::acteur
+    LEC["Lecteur d'empreinte digitale<br/>capture + extraction du gabarit"]:::materiel
+    UCE["Unité centrale (microcontrôleur)<br/>comparaison + contrôle du droit d'accès"]:::traitement
+    MEM[("Mémoire sécurisée embarquée<br/>gabarits chiffrés, autorisations, journal")]:::donnees
+    D{"Identité reconnue<br/>ET droit valide ?"}:::decision
+    OK["Relais de démarrage fermé<br/>voyant vert : le moteur démarre"]:::succes
+    KO["Relais ouvert, voyant rouge<br/>démarrage refusé, compteur + 1"]:::echec
+    AL["Alarme sonore<br/>après 3 échecs consécutifs"]:::echec
+    BDD[("Base de données centrale<br/>serveur UNSTIM")]:::donnees
+    WEB["Application web d'administration<br/>agent de sécurité, administrateur"]:::gestion
+
+    P -- "pose le doigt" --> LEC --> UCE
+    UCE <--> MEM
+    UCE --> D
+    D -- "[oui]" --> OK
+    D -- "[non]" --> KO
+    KO -. "[compteurEchecs ≥ 3]" .-> AL
+    MEM <-. "synchronisation différée<br/>(Wi-Fi du campus)" .-> BDD
+    BDD <--> WEB
+
+    classDef acteur fill:#FFFFFF,stroke:#1F3A5F,stroke-width:2px,color:#1F3A5F
+    classDef materiel fill:#FFF6DB,stroke:#B7860B,color:#5C4300
+    classDef traitement fill:#EAF6EE,stroke:#2E8B57,color:#1B5E3A
+    classDef donnees fill:#F3E8FA,stroke:#7B3FA0,color:#4A2163
+    classDef decision fill:#FFF6DB,stroke:#B7860B,color:#5C4300
+    classDef succes fill:#E3F4E8,stroke:#2E8B57,color:#1B5E3A
+    classDef echec fill:#FDECEA,stroke:#C0392B,color:#8E1B10
+    classDef gestion fill:#E8F0FA,stroke:#2E6DB4,color:#1F3A5F

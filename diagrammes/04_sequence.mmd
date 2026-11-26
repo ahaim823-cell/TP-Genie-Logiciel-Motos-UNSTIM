@@ -1,0 +1,53 @@
+%% Figure — Diagramme de séquence du démarrage biométrique
+%% Cadres : opt (vérification du droit si l'empreinte est reconnue), alt (succès / échec)
+%% et opt imbriqué (3 échecs consécutifs)
+%% Chaque message reçu par un objet correspond à une opération de sa classe (cf. diagramme de classes).
+%% Lignes de vie en pointillés (notation UML) ; acteurs non répétés en bas de diagramme.
+%%{init: {"sequence": {"mirrorActors": false}, "themeCSS": ".actor-line { stroke-dasharray: 6 4; }"}}%%
+sequenceDiagram
+    autonumber
+    actor P as Propriétaire
+    participant L as :LecteurBiometrique
+    participant U as :UniteCentrale
+    participant M as Mémoire sécurisée embarquée
+    participant R as :RelaisDemarrage
+    participant A as :Alarme
+
+    P->>L: poserDoigt()
+    activate L
+    L->>L: capturer()
+    L->>L: extraireGabarit()
+    L->>U: comparer(gabarit)
+    deactivate L
+    activate U
+    U->>M: chargerGabarits(idMoto)
+    M-->>U: gabarits chiffrés
+
+    opt empreinte reconnue
+        U->>M: lireAutorisation(idUtilisateur, idMoto)
+        M-->>U: autorisation
+        U->>U: verifierDroit(utilisateur, moto)
+    end
+
+    alt empreinte reconnue ET droit accordé
+        U->>R: autoriser()
+        R-->>U: circuit d'allumage fermé
+        U->>U: reinitialiserEchecs()
+        U->>M: enregistrer(DEMARRAGE_AUTORISE)
+        U-->>P: voyant vert : démarrage possible
+    else empreinte non reconnue OU droit refusé
+        U->>R: verrouiller()
+        R-->>U: circuit d'allumage ouvert
+        U->>U: incrementerEchecs()
+        U->>M: enregistrer(TENTATIVE_REFUSEE)
+        U-->>P: voyant rouge : démarrage refusé
+        opt compteurEchecs ≥ 3 (3 échecs consécutifs)
+            U->>A: activer()
+            activate A
+            A-->>U: alarme active
+            deactivate A
+            U->>M: enregistrer(ALARME)
+            U->>U: reinitialiserEchecs()
+        end
+    end
+    deactivate U
