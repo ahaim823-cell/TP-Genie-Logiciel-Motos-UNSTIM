@@ -14,7 +14,7 @@ cycle de développement Agile, description du dispositif, 5 diagrammes UML, bonu
 
 | Diagramme | Lien Lucidchart | Source |
 |---|---|---|
-| 1. Cas d'utilisation | [Ouvrir](https://lucid.app/lucidchart/68479f72-aef3-4a27-938a-5209746ebce1/edit?viewport_loc=-220%2C-339%2C2793%2C1478%2C0_0&invitationId=inv_7d15dd9a-31a6-447e-9ca2-6dab28550eb7) | [`01_cas_utilisation.mmd`](diagrammes/01_cas_utilisation.mmd) |
+| 1. Cas d'utilisation | [Ouvrir](https://lucid.app/lucidchart/a097c4db-98e9-4b41-8955-80416e50d266/edit?viewport_loc=-399%2C-636%2C2386%2C1263%2CE5aQ5qwkLz0K&invitationId=inv_3106234f-2138-4b21-802a-6f9428e710ee) | [`01_cas_utilisation.mmd`](diagrammes/01_cas_utilisation.mmd) |
 | 2. Classes | [Ouvrir](https://lucid.app/lucidchart/37cc9e00-bb62-4567-afdd-15d12f2cc027/edit?view_items=qy2PQcY8kUR9&page=0_0&invitationId=inv_0503d9e6-16ba-44a0-b1c3-d6ff8728c7a4) | [`02_classes.mmd`](diagrammes/02_classes.mmd) |
 | 3. Activité | [Ouvrir](https://lucid.app/lucidchart/c1b14b9c-ae0f-4791-898b-a5223860b88e/edit?invitationId=inv_54c3e76e-7bde-4bb4-bff6-a448f034c59b) | [`03_activite.mmd`](diagrammes/03_activite.mmd) |
 | 4. Séquence | [Ouvrir](https://lucid.app/lucidchart/18fa695f-601d-46f2-97d8-96c9a08299dc/edit?invitationId=inv_84ddb54f-2e17-46c2-b4db-8736dbe92f5c) | [`04_sequence.mmd`](diagrammes/04_sequence.mmd) |
