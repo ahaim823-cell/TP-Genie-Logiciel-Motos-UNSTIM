@@ -1,7 +1,7 @@
 # TP Génie Logiciel — Sécurisation des motos de l'UNSTIM par démarrage biométrique
 
 **Auteur :** Aimé Césaire Charlemagne AHOTONHOU — GMM 2, ENSGMM (UNSTIM)
-**Matière :** Génie Logiciel — sous la direction de M. CAPO-CHICHI
+**Matière :** Génie Logiciel — sous la direction du Dr CAPO CHICHI Gilbert Médard Coffi
 **Date de remise :** 26 novembre 2026
 **Modèle de développement :** Agile (Scrum) · **Outil UML :** Lucidchart
 
